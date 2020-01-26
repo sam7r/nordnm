@@ -1,4 +1,4 @@
-# nordnmcli
+# nordnm
 ## Nord VPN, Network Manager CLI with UFW Killswitch
 
 This utility package was created for linux users who wish to continue using Network Mananger whilst using Nord VPN's command line interface.

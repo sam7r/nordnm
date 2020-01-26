@@ -1,4 +1,4 @@
-module nordnmcli
+module nordnm
 
 go 1.13
 
