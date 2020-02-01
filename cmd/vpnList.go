@@ -11,7 +11,7 @@ var vpnListCmd = &cobra.Command{
 	Short: "List NordVPN servers",
 	Long:  `List all available NordVPN servers`,
 	Run: func(cmd *cobra.Command, args []string) {
-		nordvpn.Recommendations()
+		nordvpn.GetRecommendations(nordvpn.RecommendationFilters{})
 	},
 }
 
