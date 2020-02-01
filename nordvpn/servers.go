@@ -2,7 +2,6 @@ package nordvpn
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -14,7 +13,7 @@ type RecommendationFilters struct {
 	ServerGroupID string
 	CountryID     uint8
 	TechnologyID  string
-	Limit         uint8
+	Limit         uint8 `default:"10"`
 }
 
 // Recommendation body response from recommendation query
@@ -29,22 +28,38 @@ type Recommendation struct {
 
 // GetRecommendations request to NordVPN web api for recommended servers
 func GetRecommendations(filters RecommendationFilters) (recommendations []Recommendation, err error) {
+	resourceURI := "/servers/recommendations"
+	req, err := http.NewRequest("GET", nordBaseURL+resourceURI, nil)
 
-	resp, err := http.Get(nordBaseURL + "/servers/recommendations")
+	// start appending query parmas if present in filters
+	q := req.URL.Query()
+
+	if filters.ServerGroupID != "" {
+		q.Add("filters[servers_groups][identifier]", filters.ServerGroupID)
+	}
+	if filters.TechnologyID != "" {
+		q.Add("filters[servers_technologies][identifier]", filters.TechnologyID)
+	}
+	if filters.CountryID != 0 {
+		q.Add("filters[country_id]", string(filters.CountryID))
+	}
+	q.Add("limit", string(filters.Limit))
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
 
 	if err != nil {
-		print(err)
+		return nil, err
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		print(err)
+		return nil, err
 	}
 
 	err = json.Unmarshal(body, &recommendations)
-
 	return recommendations, err
 }
 

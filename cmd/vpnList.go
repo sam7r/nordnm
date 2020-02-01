@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"nordnm/nordvpn"
 )
@@ -11,7 +12,13 @@ var vpnListCmd = &cobra.Command{
 	Short: "List NordVPN servers",
 	Long:  `List all available NordVPN servers`,
 	Run: func(cmd *cobra.Command, args []string) {
-		nordvpn.GetRecommendations(nordvpn.RecommendationFilters{})
+		resp, err := nordvpn.GetRecommendations(nordvpn.RecommendationFilters{})
+		if err != nil {
+			// log full error to file
+			// print and panic with user friendly error message
+		}
+
+		fmt.Println(resp)
 	},
 }
 
