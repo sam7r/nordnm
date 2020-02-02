@@ -15,7 +15,9 @@ limitations under the License.
 */
 package main
 
-import "nordnm/cmd"
+import (
+	"nordnm/cmd"
+)
 
 func main() {
 	cmd.Execute()

@@ -2,8 +2,10 @@ package nordvpn
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"nordnm/logger"
 )
 
 const nordBaseURL = "https://api.nordvpn.com/v1"
@@ -13,7 +15,7 @@ type RecommendationFilters struct {
 	ServerGroupID string
 	CountryID     uint8
 	TechnologyID  string
-	Limit         uint8 `default:"10"`
+	Limit         uint8
 }
 
 // Recommendation body response from recommendation query
@@ -28,6 +30,7 @@ type Recommendation struct {
 
 // GetRecommendations request to NordVPN web api for recommended servers
 func GetRecommendations(filters RecommendationFilters) (recommendations []Recommendation, err error) {
+
 	resourceURI := "/servers/recommendations"
 	req, err := http.NewRequest("GET", nordBaseURL+resourceURI, nil)
 
@@ -41,9 +44,17 @@ func GetRecommendations(filters RecommendationFilters) (recommendations []Recomm
 		q.Add("filters[servers_technologies][identifier]", filters.TechnologyID)
 	}
 	if filters.CountryID != 0 {
-		q.Add("filters[country_id]", string(filters.CountryID))
+		q.Add("filters[country_id]", fmt.Sprint(filters.CountryID))
 	}
-	q.Add("limit", string(filters.Limit))
+
+	if filters.Limit == 0 {
+		filters.Limit = 10
+	}
+
+	q.Add("limit", fmt.Sprint(filters.Limit))
+	req.URL.RawQuery = q.Encode()
+
+	logger.STDout.Info(req.URL.String())
 
 	client := &http.Client{}
 	resp, err := client.Do(req)

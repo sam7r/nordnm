@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/spf13/cobra"
+	"nordnm/logger"
 	"nordnm/nordvpn"
+
+	"github.com/spf13/cobra"
 )
 
 // vpnListCmd represents the vpnList command
@@ -14,11 +15,9 @@ var vpnListCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		resp, err := nordvpn.GetRecommendations(nordvpn.RecommendationFilters{})
 		if err != nil {
-			// log full error to file
-			// print and panic with user friendly error message
+			logger.STDout.Errorf("Getting recommendations failed: %v", err)
 		}
-
-		fmt.Println(resp)
+		logger.STDout.Info(resp)
 	},
 }
 
