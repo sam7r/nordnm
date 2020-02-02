@@ -8,8 +8,6 @@ import (
 	"nordnm/logger"
 )
 
-const nordBaseURL = "https://api.nordvpn.com/v1"
-
 // RecommendationFilters filters to apply to recommendation query
 type RecommendationFilters struct {
 	ServerGroupID string
@@ -20,12 +18,13 @@ type RecommendationFilters struct {
 
 // Recommendation body response from recommendation query
 type Recommendation struct {
-	ID       uint16 `json:"id"`
-	Name     string `json:"name"`
-	Station  string `json:"station"`
-	Hostname string `json:"hostname"`
-	Load     string `json:"load"`
-	Status   string `json:"status"`
+	ID           uint32       `json:"id"`
+	Name         string       `json:"name"`
+	Station      string       `json:"station"`
+	Hostname     string       `json:"hostname"`
+	Load         uint16       `json:"load"`
+	Status       string       `json:"status"`
+	Technologies []Technology `json:"technologies"`
 }
 
 // GetRecommendations request to NordVPN web api for recommended servers
@@ -46,31 +45,32 @@ func GetRecommendations(filters RecommendationFilters) (recommendations []Recomm
 	if filters.CountryID != 0 {
 		q.Add("filters[country_id]", fmt.Sprint(filters.CountryID))
 	}
-
+	// set a default limit if none set
 	if filters.Limit == 0 {
 		filters.Limit = 10
 	}
-
 	q.Add("limit", fmt.Sprint(filters.Limit))
+
+	// encode query into request
 	req.URL.RawQuery = q.Encode()
+	logger.Stdout.Info(req.URL.String())
 
-	logger.STDout.Info(req.URL.String())
-
+	// make request
 	client := &http.Client{}
 	resp, err := client.Do(req)
-
 	if err != nil {
 		return nil, err
 	}
 
+	// read out response and unmarshal into type
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-
 	if err != nil {
 		return nil, err
 	}
-
 	err = json.Unmarshal(body, &recommendations)
+	logger.Stdout.Info(resp)
+
 	return recommendations, err
 }
 
@@ -79,9 +79,6 @@ func GetServerGroups() {}
 
 // GetServerCountries gets a list of countries where servers are available
 func GetServerCountries() {}
-
-// GetTechnologies gets a list of supported technologies used by NordVPN
-func GetTechnologies() {}
 
 // GetServerConfigFile downloads the OVPN file for the given server
 func GetServerConfigFile() {}

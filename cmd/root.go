@@ -2,13 +2,16 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
+	"nordnm/logger"
 	"os"
+
+	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
+var verbose bool
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
@@ -17,18 +20,14 @@ var rootCmd = &cobra.Command{
 	Short: "A utility to manage your nord connections using nmcli",
 	Long: `Use nordnm to manage your nord vpn connections directly with the Network Manager CLI
 	The tool includes commands to:
-	- vpn: Interact with the NordVPN web API
+	- vpn: Interact with the NordVPN API to query available servers
 	- conn: Manage, start and stop created Network Manager connections
 	- killswitch: Use UFW to enable and disable a killswitch
 	- config: manage configuration values
   `,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -37,17 +36,14 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
+	cobra.OnInitialize(initConfig, initLogger)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file default is $HOME/.nordnm)")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+}
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+// initLogger reads in verbose flag to set level of logger
+func initLogger() {
+	logger.Init(verbose)
 }
 
 // initConfig reads in config file and ENV variables if set.
