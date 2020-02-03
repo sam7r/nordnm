@@ -1,13 +1,16 @@
 # [WIP] nordnm
 ## Nord VPN, Network Manager CLI with UFW Killswitch
 
-This utility package was created for linux users who wish to continue using Network Mananger whilst using Nord VPN's command line interface.
-Once setup it should make connection management and remain very stable.
+**Features below are a work in progress and will change**
+**In it's current state there is very limited functionality so please stay tuned for the first release**
+
+This utility package was created for linux users who use NetworkManager and like to manage NordVPN connections manually via OVPN files.
+The main purpose of this package is to speed up the process of listing nord vpn servers and managing new/existing ovpn connections.
 
 In its current state this package has some strict dependencies but this will change over time.
 1) Network Manager (nmcli)
 2) Network Manager OpenVPN
-3) UFW (Uncomplicated Firewall)
+3) UFW (Uncomplicated Firewall) -- optional: if you use a different firewall or have your own killswitch toggle
 
 The package is written in Go and CLI created with Cobra.
 
