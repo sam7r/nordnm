@@ -1,4 +1,4 @@
-# nordnm
+# [WIP] nordnm
 ## Nord VPN, Network Manager CLI with UFW Killswitch
 
 This utility package was created for linux users who wish to continue using Network Mananger whilst using Nord VPN's command line interface.
@@ -26,8 +26,8 @@ nordnm config set <option> <value>
 ```
 nordnm vpn [--OPTIONS]
 ```
- -list (Default): lists previously downloaded vpn connection profiles <br>
- -empty-cache: remove all files downloaded not currently in use from previous 'conn create' connections <br>
+ - list available servers, can be filtered with optional args<br>
+ - show groups, technologies and country codes available
 
 
 ### Connection management
