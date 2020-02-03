@@ -56,6 +56,6 @@ func init() {
 
 	vpnListCmd.Flags().StringVarP(&listFlagFilters.ServerGroupID, "group", "g", "", "Server group ID i.e legacy_double_vpn")
 	vpnListCmd.Flags().Uint8VarP(&listFlagFilters.CountryID, "country", "c", 0, "Country ID i.e. 227 (GB)")
-	vpnListCmd.Flags().StringVarP(&listFlagFilters.TechnologyID, "technology", "t", "", "Technology ID i.e. openvpn_udp")
+	vpnListCmd.Flags().StringVarP(&listFlagFilters.TechnologyID, "technology", "t", "", "Technology identifier i.e. openvpn_udp")
 	vpnListCmd.Flags().Uint8VarP(&listFlagFilters.Limit, "limit", "l", 10, "Limit the number of results returned")
 }

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -10,9 +9,7 @@ var vpnCmd = &cobra.Command{
 	Use:   "vpn",
 	Short: "Use this command to interact with the NordVPN web API",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("vpn called")
-	},
+	// Run: func(cmd *cobra.Command, args []string) {},
 }
 
 func init() {

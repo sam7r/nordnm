@@ -7,17 +7,17 @@ import (
 	"nordnm/logger"
 )
 
-// Technology nordvpn technology type def
-type Technology struct {
-	ID         uint32 `json:"id"`
-	Name       string `json:"name"`
-	Identifier string `json:"identifier"`
+// Country nordvpn technology type def
+type Country struct {
+	ID   uint32 `json:"id"`
+	Name string `json:"name"`
+	Code string `json:"code"`
 }
 
-// GetTechnologies gets a list of supported technologies used by NordVPN
-func GetTechnologies() (technologies []Technology, err error) {
+// GetCountries gets a list of supported countries used by NordVPN
+func GetCountries() (countries []Country, err error) {
 
-	resourceURI := "/technologies"
+	resourceURI := "/servers/countries"
 	req, err := http.NewRequest("GET", nordBaseURL+resourceURI, nil)
 
 	logger.Stdout.Info(req.URL.String())
@@ -37,7 +37,7 @@ func GetTechnologies() (technologies []Technology, err error) {
 	}
 
 	logger.Stdout.Info(resp)
-	err = json.Unmarshal(body, &technologies)
+	err = json.Unmarshal(body, &countries)
 
-	return technologies, err
+	return countries, err
 }

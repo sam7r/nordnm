@@ -73,12 +73,3 @@ func GetRecommendations(filters RecommendationFilters) (recommendations []Recomm
 
 	return recommendations, err
 }
-
-// GetServerGroups gets a list of groups which are available within NordVPN
-func GetServerGroups() {}
-
-// GetServerCountries gets a list of countries where servers are available
-func GetServerCountries() {}
-
-// GetServerConfigFile downloads the OVPN file for the given server
-func GetServerConfigFile() {}
