@@ -18,7 +18,9 @@ func checkHasNmcli() (err error) {
 func getStdoutText(r io.Reader) (stdout []string) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
-		stdout = append(stdout, scanner.Text())
+		if lineOut := scanner.Text(); lineOut != "" {
+			stdout = append(stdout, lineOut)
+		}
 	}
 	return stdout
 }

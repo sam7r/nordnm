@@ -28,6 +28,8 @@ var connListCmd = &cobra.Command{
 			logger.Stdout.Infof("Showing connections failed: %v", err)
 		}
 
+		// TODO: add active state to the table
+
 		// create new table for output
 		t := table.NewWriter()
 		t.SetOutputMirror(os.Stdout)
