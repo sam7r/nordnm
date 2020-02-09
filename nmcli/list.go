@@ -36,7 +36,7 @@ func ListConnections(onlyActive bool) (out NetworkConnections, err error) {
 		return nil, err
 	}
 
-	execCmd := []string{"conn", "show"}
+	execCmd := []string{"-c", "no", "conn", "show"}
 	if onlyActive == true {
 		execCmd = append(execCmd, "--active")
 	}
@@ -66,9 +66,9 @@ func ListConnections(onlyActive bool) (out NetworkConnections, err error) {
 
 	cmd.Wait()
 
-	dataRows := data[1 : len(data)-1]
+	// 	dataRows := data[1 : len(data)-1]
 
-	for _, conn := range dataRows {
+	for _, conn := range data {
 		row := strings.Fields(conn)
 		logger.Stdout.Infof("%v", row)
 		out = append(out, NetworkConnection{row[0], row[1], row[2]})

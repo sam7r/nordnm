@@ -6,9 +6,11 @@ import (
 	"nordnm/nmcli"
 	"nordnm/nordvpn"
 	"nordnm/utils"
+	"os"
 	"strings"
 	"time"
 
+	"github.com/jedib0t/go-pretty/table"
 	"github.com/spf13/cobra"
 )
 
@@ -22,14 +24,28 @@ var dns string
 var connCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new connection",
-	Long:  ``,
+	Long:  `Create a new connection within NetworkManager, this will only add and not activate the connection, additional settings will be taken from your config file or can be passed in to override`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// fetch ovpn file from nord cdn
 		hostID = strings.ToLower(hostID)
 		techID = strings.ToLower(techID)
+
+		// check if host-id already exists?
+		networkConnections, err := nmcli.ListConnections(false)
+		for _, nmconn := range networkConnections {
+			if strings.Contains(nmconn.Name, fmt.Sprintf("%s.", hostID)) {
+				fmt.Println("Existing connection found for given host id, aborting")
+				logger.Stdout.Infof("Connection for %s already exists", nmconn)
+				os.Exit(1)
+			}
+		}
+
+		// fetching ovpn file
 		file, err := nordvpn.GetNordVpnConfigFile(hostID, techID)
 		if err != nil {
-			logger.Stdout.Fatalf("Fetching nord ovpn file failed: %+v, aborting command", err)
+			fmt.Println("Fetching ovpn file failed, aborting")
+			logger.Stdout.Infof("Fetching nord ovpn file failed: %+v, aborting command", err)
+			os.Exit(1)
 		}
 
 		// create connection id and save to temp
@@ -39,12 +55,16 @@ var connCreateCmd = &cobra.Command{
 		logger.Stdout.Infof("Saving temp file to %s", filepath)
 		err = utils.SaveFileToTempLocation(filepath, file, 0664)
 		if err != nil {
-			logger.Stdout.Fatalf("Saving temp file at location %s failed: %+v", filepath, err)
+			fmt.Println("Temp file save failure, aborting")
+			logger.Stdout.Infof("Saving temp file at location %s failed: %+v", filepath, err)
+			os.Exit(1)
 		}
 
 		// nmcli connection import
 		if out, err := nmcli.ImportOvpnConnection(filepath); err != nil {
-			logger.Stdout.Fatalf("Importing OVPN file to NetworkManager failed: %s", err)
+			fmt.Println("NetworkManager import failure, aborting")
+			logger.Stdout.Errorf("Importing OVPN file to NetworkManager failed: %s", err)
+			os.Exit(1)
 		} else {
 			logger.Stdout.Infof("Imported OVPN file: %v", out)
 		}
@@ -63,10 +83,32 @@ var connCreateCmd = &cobra.Command{
 				Pass: password,
 			},
 		}
+
 		if out, err := nmcli.ModifyConnection(connectionID, connectionSettings); err != nil {
-			logger.Stdout.Fatalf("Modifying OVPN file to NetworkManager failed: %s", err)
+			fmt.Print("A connection was created but unable to modify the details, aborting")
+			logger.Stdout.Infof("Modifying OVPN file to NetworkManager failed: %s", err)
+			os.Exit(1)
 		} else {
+			fmt.Println("Connection successfully created")
 			logger.Stdout.Infof("Modified OVPN file: %v", out)
+			newNetworkConnections, _ := nmcli.ListConnections(false)
+			var newConnection nmcli.NetworkConnection
+			for _, newnmconn := range newNetworkConnections {
+				for _, existingnmconn := range networkConnections {
+					if existingnmconn.Name != newnmconn.Name {
+						newConnection = newnmconn
+					}
+				}
+			}
+
+			t := table.NewWriter()
+			t.SetOutputMirror(os.Stdout)
+			t.AppendHeader(table.Row{"NAME", "UUID"})
+			t.AppendRow([]interface{}{
+				newConnection.Name,
+				newConnection.UUID,
+			})
+			t.Render()
 		}
 	},
 }
