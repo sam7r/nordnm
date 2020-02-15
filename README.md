@@ -44,7 +44,7 @@ nordnm vpn list /
     --limit 3
 ```
 
-Instead of entering these in manually, you can setup a config file in `$HOME/.nordnm`<br/>
+Instead of entering these in manually, you can setup a config file in `$HOME/.nordnmrc`<br/>
 Any given flags will override configuration settings
 
 ```json
@@ -101,7 +101,7 @@ nordnm conn create /
     --ignoreIPV6 true
 ```
 
-Instead of entering these credentials manually, you can create and add them to `$HOME/.nordnm`
+Instead of entering these credentials manually, you can create and add them to `$HOME/.nordnmrc`
 ```json
 {
     "connection": {
