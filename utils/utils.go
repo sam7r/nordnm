@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// SaveFileToTempLocation saves file at given path
-func SaveFileToTempLocation(filepath string, file []byte, permissions int) error {
+// SaveFile saves file at given path
+func SaveFile(filepath string, file []byte, permissions int) error {
 	return ioutil.WriteFile(filepath, file, os.FileMode(permissions))
 }

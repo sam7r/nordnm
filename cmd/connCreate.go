@@ -51,7 +51,7 @@ var connCreateCmd = &cobra.Command{
 		connectionID := fmt.Sprintf("%s.nordvpn.com.%s.%d", hostID, techID, msec)
 		filepath := fmt.Sprintf("/tmp/%s.ovpn", connectionID)
 		logger.Stdout.Infof("Saving temp file to %s", filepath)
-		err = utils.SaveFileToTempLocation(filepath, file, 0664)
+		err = utils.SaveFile(filepath, file, 0664)
 		if err != nil {
 			fmt.Println("Temp file save failure, aborting")
 			logger.Stdout.Infof("Saving temp file at location %s failed: %+v", filepath, err)
@@ -67,6 +67,7 @@ var connCreateCmd = &cobra.Command{
 			logger.Stdout.Infof("Imported OVPN file: %v", out)
 		}
 
+		// get connection config
 		username := viper.GetString("connection.username")
 		password := viper.GetString("connection.password")
 		dns := viper.GetString("connection.dns")
