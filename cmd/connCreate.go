@@ -12,13 +12,11 @@ import (
 
 	"github.com/jedib0t/go-pretty/table"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var hostID string
 var techID string
-var username string
-var password string
-var dns string
 
 // connCreateCmd represents the vpn command
 var connCreateCmd = &cobra.Command{
@@ -69,6 +67,11 @@ var connCreateCmd = &cobra.Command{
 			logger.Stdout.Infof("Imported OVPN file: %v", out)
 		}
 
+		username := viper.GetString("connection.username")
+		password := viper.GetString("connection.password")
+		dns := viper.GetString("connection.dns")
+		ignoreIPV6 := viper.GetBool("connection.ignoreIPV6")
+
 		// nmcli modify connection
 		authmode := "encrypted"
 		if username != "" && password != "" {
@@ -76,7 +79,7 @@ var connCreateCmd = &cobra.Command{
 		}
 		connectionSettings := nmcli.OvpnConnectionDefaults{
 			DNS:        dns,
-			IgnoreIPV6: true,
+			IgnoreIPV6: ignoreIPV6,
 			AuthSettings: nmcli.Auth{
 				Mode: authmode,
 				User: username,
@@ -94,10 +97,8 @@ var connCreateCmd = &cobra.Command{
 			newNetworkConnections, _ := nmcli.ListConnections(false)
 			var newConnection nmcli.NetworkConnection
 			for _, newnmconn := range newNetworkConnections {
-				for _, existingnmconn := range networkConnections {
-					if existingnmconn.Name != newnmconn.Name {
-						newConnection = newnmconn
-					}
+				if strings.Contains(newnmconn.Name, fmt.Sprintf("%s.", hostID)) {
+					newConnection = newnmconn
 				}
 			}
 
@@ -118,9 +119,15 @@ func init() {
 	connCreateCmd.Flags().StringVarP(&hostID, "host", "", "", "The nord vpn host id eg. uk1212 (Required)")
 	connCreateCmd.Flags().StringVarP(&techID, "tech", "", "UDP", "The vpn connection technology to use, either TCP or UDP")
 	connCreateCmd.MarkFlagRequired("host")
+	connCreateCmd.MarkFlagRequired("tech")
 
-	connCreateCmd.Flags().StringVarP(&username, "username", "", "", "Manually set NordVPN username")
-	connCreateCmd.Flags().StringVarP(&password, "password", "", "", "Manually set NordVPN password")
+	connCreateCmd.Flags().StringP("username", "", "", "Manually set NordVPN username")
+	connCreateCmd.Flags().StringP("password", "", "", "Manually set NordVPN password")
+	connCreateCmd.Flags().StringP("dns", "", "103.86.99.100,103.86.96.100", "Manually set dns address eg. 1.1.1.1,1.0.0.1")
+	connCreateCmd.Flags().BoolP("ignoreIPV6", "", true, "Set VPN connection to ignore IPV6")
 
-	connCreateCmd.Flags().StringVarP(&dns, "dns", "", "103.86.99.100,103.86.96.100", "Manually set dns address eg. 1.1.1.1,1.0.0.1")
+	viper.BindPFlag("connection.username", connCreateCmd.Flag("username"))
+	viper.BindPFlag("connection.password", connCreateCmd.Flag("password"))
+	viper.BindPFlag("connection.dns", connCreateCmd.Flag("dns"))
+	viper.BindPFlag("connection.ignoreIPV6", connCreateCmd.Flag("ignoreIPV6"))
 }
