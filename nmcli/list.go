@@ -2,7 +2,7 @@ package nmcli
 
 import (
 	"fmt"
-	"nordnm/logger"
+	"github.com/sam7r/nordnm/logger"
 	"os/exec"
 	"strings"
 )

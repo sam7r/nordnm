@@ -16,7 +16,7 @@ limitations under the License.
 package main
 
 import (
-	"nordnm/cmd"
+	"github.com/sam7r/nordnm/cmd"
 )
 
 func main() {

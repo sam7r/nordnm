@@ -2,8 +2,8 @@ package nmcli
 
 import (
 	"bufio"
+	"github.com/sam7r/nordnm/logger"
 	"io"
-	"nordnm/logger"
 	"os/exec"
 )
 

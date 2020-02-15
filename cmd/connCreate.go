@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"nordnm/logger"
-	"nordnm/nmcli"
-	"nordnm/nordvpn"
-	"nordnm/utils"
+	"github.com/sam7r/nordnm/logger"
+	"github.com/sam7r/nordnm/nmcli"
+	"github.com/sam7r/nordnm/nordvpn"
+	"github.com/sam7r/nordnm/utils"
 	"os"
 	"strings"
 	"time"

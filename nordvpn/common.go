@@ -1,9 +1,9 @@
 package nordvpn
 
 import (
+	"github.com/sam7r/nordnm/logger"
 	"io/ioutil"
 	"net/http"
-	"nordnm/logger"
 )
 
 const nordBaseURL = "https://api.nordvpn.com/v1"

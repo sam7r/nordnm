@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"nordnm/logger"
+	"github.com/sam7r/nordnm/logger"
 	"os"
 
 	"github.com/spf13/cobra"

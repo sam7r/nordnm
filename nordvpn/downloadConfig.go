@@ -2,9 +2,9 @@ package nordvpn
 
 import (
 	"fmt"
+	"github.com/sam7r/nordnm/logger"
 	"io/ioutil"
 	"net/http"
-	"nordnm/logger"
 )
 
 // TODO: Get from config, env $TMPDIR or /tmp

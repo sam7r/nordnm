@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"nordnm/logger"
-	"nordnm/nmcli"
+	"github.com/sam7r/nordnm/logger"
+	"github.com/sam7r/nordnm/nmcli"
 	"os"
 
 	"github.com/jedib0t/go-pretty/table"

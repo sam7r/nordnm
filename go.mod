@@ -1,4 +1,4 @@
-module nordnm
+module github.com/sam7r/nordnm
 
 go 1.13
 
