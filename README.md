@@ -1,51 +1,55 @@
-# nordnm
-## Nord VPN, Network Manager CLI with UFW Killswitch
+# nordnm - Nord VPN, Network Manager CLI with UFW Killswitch
 
 
-Util written in Go for linux users who like to manage thier NordVPN network connections via the standard NetworkManager package.
-It aims to take away the pain of this manual process away by providing easy interface to query NordVPN, find out the best server, download the configuration and import into NetworkManger.
+Util written in Go for linux users who like to manage their Nord VPN connections via the standard NetworkManager package, this is not a background daemon and will only operate whilst executing the given command.
 
+The main object here is to relieve the manual process required to find the best Nord VPN server, download the ovpn file and import the configuration into NetworkManger.
+
+For this to work it requires youhaving the following packages installed:
 1) [Network Manager](https://www.archlinux.org/packages/extra/x86_64/networkmanager/)
 2) [Network Manager OpenVPN](https://www.archlinux.org/packages/extra/x86_64/networkmanager-openvpn/)
-3) [UFW (Uncomplicated Firewall)](https://www.archlinux.org/packages/community/any/ufw/) -- optional: if you use a different firewall or have your own killswitch toggle
+3) [UFW (Uncomplicated Firewall)](https://www.archlinux.org/packages/community/any/ufw/) -- optional if you use a different firewall or have your own kill switch toggle
 
 ## Features
 The `nordnm` comes with a set of commands to help with:
-- Identify the best server within a specified country, vpn group and connection type
-- Downloads the chosen ovpn file and creates a new connection in NetworkManager
-- Toggle a UFW killswitch
+- Identify the best server within a specified country filtering by vpn group (standard, double vpn etc...) and connection type (udp, tcp)
+- Downloads the chosen server ovpn file and creates a new connection in NetworkManager
+- Toggle a UFW kill switch
 
 # Installation
 
-This package requires Golang >= 1.13<br />
-You will need to have the following packages already installed and configured
+This package requires **Go** >= **1.13**<br />
+As mentioned above you will need to have the following packages already installed and configured for this to work
 ```sh
-pacman -S networkmanager networkmanager-openvpn ufw go
+pacman -S networkmanager networkmanager-openvpn go
 ```
+If this was your first time attempting to install **Go** you will most likely need to check your `go env` settings are correct before continuing
+
 Install the package
 ```sh
 go get -u github.com/sam7r/nordnm
 ```
-
+This will download and install in  `$GOPATH/src`, now you can run the binary and follow on with the examples below
 
 # Examples
-## NordVPN server finder
+## Nord VPN server finder
 ```sh
 nordnm vpn list [--OPTIONS]
 ```
 
-Example using all available flags
+### Example using all available flags
 ```sh
-# list top servers standard UDP servers in the UK
-nordnm vpn list /
-    --country 227 /
-    --group legacy_standard /
-    --tech openvpn_udp /
+# list top 3 standard UDP servers in the UK
+nordnm vpn list \
+    --country  227 \
+    --group legacy_standard \
+    --technology openvpn_udp \
     --limit 3
 ```
+Short hands for the above can be used, run `nordnm vpn list -h` for more details
 
 Instead of entering these in manually, you can setup a config file in `$HOME/.nordnmrc`<br/>
-Any given flags will override configuration settings
+These will become the default, however any given flags at runtime will override these settings
 
 ```json
 {
@@ -58,7 +62,7 @@ Any given flags will override configuration settings
 
 ```
 
-To find out which country code code, group identifier or technology identifier to enter you can use the `nordnm vpn show` command
+To find any country code, group identifier or technology identifier available within Nord VPN, you can use the `nordnm vpn show` command
 
 ```sh
 # get the list of NordVPN technologies
@@ -76,7 +80,7 @@ nordnm vpn show groups
 ```sh
 nordnm conn [--OPTIONS]
 ```
-List vpn connectionscrea
+### List vpn connections
 ```sh
 # lists only VPN NetworkManager connections
 nordnm conn list
@@ -85,7 +89,7 @@ nordnm conn list
 nordnm conn list --all --active
 ```
 
-Create a new NetworkManager vpn connection
+### Create a new connection
 ```sh
 nordnm conn create [--OPTIONS]
 ```
@@ -101,7 +105,7 @@ nordnm conn create /
     --ignoreIPV6 true
 ```
 
-Instead of entering these credentials manually, you can create and add them to `$HOME/.nordnmrc`
+Instead of entering these credentials manually, you can add them to the `$HOME/.nordnmrc` settings file 
 ```json
 {
     "connection": {
@@ -112,14 +116,45 @@ Instead of entering these credentials manually, you can create and add them to `
     }
 }
 ```
-Credentials are not required as part of the connection creation as these can be added manually in the NetworkManager GUI or potentially a setup where they are stored in your operating systems key manager.
+Credentials are not required as part of the connection creation stage as these can be added in manually within the NetworkManager GUI
 
-**When adding connections there are two options that are on by default to help stop DNS leaks**
+**When adding connections there are two settings that are included by default to help stop DNS leaks**
 ```sh
-# prevents Wired/Wifi DNS leaking in to /etc/resolv.conf
+# prevents other DNS settings leaking in to /etc/resolv.conf
 ipv4.dns-priority -1 
 ipv4.ignore-auto-dns true
 ```
+
+## Killswitch
+The following command will add the necessary UFW rules for your vpn connection to be the only outgoing source
+
+### Example enabling killswitch rules, must be ran in `sudo` as UFW requires it
+```sh
+sudo nordnm killswitch enable [--OPTIONS]
+```
+
+If you want to see what rules would be affected without making any actual changes you can run with the `--dry-run` flag
+
+### Example removing killswitch rules
+```sh
+sudo nordnm killswitch disable [--OPTIONS]
+```
+
+Both of the above commands are essentially shortcut for applying or removing the following rules
+```sh
+# stop default traffic
+default deny incoming
+default allow outgoing
+
+# allow traffic on tun interface
+allow out on tun0 from any to any
+allow in on tun0 from any to any
+
+# allow out on ports needed to establish connection to VPN
+allow out 443/tcp
+allow out 1194/udp
+```
+There is no firewall refresh so running enable/disable will not affect any of your existing rules
 
 ## Help
 If at any point when using this you are unsure of the sub commands or flags available use the `--help` or `-h` flag
@@ -128,7 +163,7 @@ nordnm vpn --help
 ```
 
 # Contributing
-Contributing to this project is welcome, so far I have only built this to serve my own particular use case but am happy for this to extend beyond NordVPN and the `nmcli` interface.
+Contributing to this project is welcome, so far I have only built this to serve my own particular use cases
 
 To debug or track events in more detail you can run in verbose output mode
 ```sh
