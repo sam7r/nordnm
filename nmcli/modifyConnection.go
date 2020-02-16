@@ -3,6 +3,7 @@ package nmcli
 import (
 	"fmt"
 	"github.com/sam7r/nordnm/logger"
+	"github.com/sam7r/nordnm/utils"
 	"os/exec"
 	"strings"
 )
@@ -69,8 +70,8 @@ func ModifyConnection(connectionID string, settings OvpnConnectionDefaults) ([]s
 		panic(err)
 	}
 
-	data := getStdoutText(stdout)
-	if errOut := getStdoutText(stderr); errOut != nil {
+	data := utils.GetStdoutText(stdout)
+	if errOut := utils.GetStdoutText(stderr); errOut != nil {
 		return nil, fmt.Errorf(strings.Join(errOut, " "))
 	}
 

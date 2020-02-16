@@ -2,9 +2,11 @@ package nmcli
 
 import (
 	"fmt"
-	"github.com/sam7r/nordnm/logger"
 	"os/exec"
 	"strings"
+
+	"github.com/sam7r/nordnm/logger"
+	"github.com/sam7r/nordnm/utils"
 )
 
 // NetworkConnection connection information provided by nmcli
@@ -59,14 +61,12 @@ func ListConnections(onlyActive bool) (out NetworkConnections, err error) {
 		panic(err)
 	}
 
-	data := getStdoutText(stdout)
-	if errOut := getStdoutText(stderr); errOut != nil {
+	data := utils.GetStdoutText(stdout)
+	if errOut := utils.GetStdoutText(stderr); errOut != nil {
 		err = fmt.Errorf(strings.Join(errOut, " "))
 	}
 
 	cmd.Wait()
-
-	// 	dataRows := data[1 : len(data)-1]
 
 	for _, conn := range data {
 		row := strings.Fields(conn)

@@ -2,9 +2,11 @@ package nmcli
 
 import (
 	"fmt"
-	"github.com/sam7r/nordnm/logger"
 	"os/exec"
 	"strings"
+
+	"github.com/sam7r/nordnm/logger"
+	"github.com/sam7r/nordnm/utils"
 )
 
 // ImportOvpnConnection imports connection from openvpn file
@@ -35,8 +37,8 @@ func ImportOvpnConnection(filepath string) ([]string, error) {
 		panic(err)
 	}
 
-	data := getStdoutText(stdout)
-	if errOut := getStdoutText(stderr); len(errOut) > 0 {
+	data := utils.GetStdoutText(stdout)
+	if errOut := utils.GetStdoutText(stderr); len(errOut) > 0 {
 		logger.Stdout.Infof("cmd resp -> data %v", data)
 		logger.Stdout.Infof("cmd resp -> error %v", errOut)
 		return nil, fmt.Errorf(strings.Join(errOut, " "))
