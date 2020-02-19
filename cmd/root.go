@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/sam7r/nordnm/logger"
+	"github.com/sam7r/nordnm/utils"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -43,14 +43,14 @@ func init() {
 
 // initLogger reads in verbose flag to set level of logger
 func initLogger() {
-	logger.Init(verbose)
+	utils.InitLogger(verbose)
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
-		logger.Stdout.Infof("Loading config from flag")
+		utils.Logger.Infof("Loading config from flag")
 		viper.SetConfigFile(cfgFile)
 	} else {
 		// Find home directory.
@@ -59,7 +59,7 @@ func initConfig() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		logger.Stdout.Infof("Loading config from home dir: %s", home)
+		utils.Logger.Infof("Loading config from home dir: %s", home)
 
 		// Search config in home directory with name ".nordnmrc" (without extension).
 		viper.AddConfigPath(fmt.Sprintf("%s", home))
@@ -71,8 +71,8 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		logger.Stdout.Infof("Using config file: %s", viper.ConfigFileUsed())
+		utils.Logger.Infof("Using config file: %s", viper.ConfigFileUsed())
 	} else {
-		logger.Stdout.Errorf("Error reading in config %w", err)
+		utils.Logger.Errorf("Error reading in config %w", err)
 	}
 }

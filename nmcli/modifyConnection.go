@@ -2,7 +2,6 @@ package nmcli
 
 import (
 	"fmt"
-	"github.com/sam7r/nordnm/logger"
 	"github.com/sam7r/nordnm/utils"
 	"os/exec"
 	"strings"
@@ -49,24 +48,24 @@ func ModifyConnection(connectionID string, settings OvpnConnectionDefaults) ([]s
 	for _, cmd := range execCmd {
 		cmdFields = append(cmdFields, strings.Fields(cmd)...)
 	}
-	logger.Stdout.Infof("running nmcli %v", cmdFields)
+	utils.Logger.Infof("running nmcli %v", cmdFields)
 	cmd := exec.Command("nmcli", cmdFields...)
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		logger.Stdout.Info("cmd out pipe produced err")
+		utils.Logger.Info("cmd out pipe produced err")
 		panic(err)
 	}
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		logger.Stdout.Info("cmd out err produced")
+		utils.Logger.Info("cmd out err produced")
 		panic(err)
 	}
 
 	err = cmd.Start()
 	if err != nil {
-		logger.Stdout.Info("cmd failed to start")
+		utils.Logger.Info("cmd failed to start")
 		panic(err)
 	}
 

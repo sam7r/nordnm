@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/sam7r/nordnm/logger"
 	"github.com/sam7r/nordnm/nmcli"
+	"github.com/sam7r/nordnm/utils"
 	"os"
 
 	"github.com/jedib0t/go-pretty/table"
@@ -21,11 +21,11 @@ var connListCmd = &cobra.Command{
 		out, err := nmcli.ListConnections(showActiveConn)
 		if showAllConn != true {
 			out.FilterByType("vpn")
-			logger.Stdout.Info(out)
+			utils.Logger.Info(out)
 		}
 
 		if err != nil {
-			logger.Stdout.Infof("Showing connections failed: %v", err)
+			utils.Logger.Infof("Showing connections failed: %v", err)
 		}
 
 		// TODO: add active state to the table

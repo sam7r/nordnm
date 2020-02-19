@@ -5,7 +5,6 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/sam7r/nordnm/logger"
 	"github.com/sam7r/nordnm/utils"
 )
 
@@ -61,29 +60,29 @@ func EnableKillswitch(dryRun bool) (out []string, err error) {
 
 	groupOut := make(map[string][]string)
 	for ruleKey, ruleGroup := range rules {
-		logger.Stdout.Infof("running ufw %s", ruleKey)
+		utils.Logger.Infof("running ufw %s", ruleKey)
 		for _, rule := range ruleGroup {
 			if dryRun {
 				rule = "--dry-run " + rule
 			}
-			logger.Stdout.Infof("ufw %s", strings.Fields(rule))
+			utils.Logger.Infof("ufw %s", strings.Fields(rule))
 			cmd := exec.Command("ufw", strings.Fields(rule)...)
 
 			stdout, err := cmd.StdoutPipe()
 			if err != nil {
-				logger.Stdout.Info("cmd out pipe produced err")
+				utils.Logger.Info("cmd out pipe produced err")
 				panic(err)
 			}
 
 			stderr, err := cmd.StderrPipe()
 			if err != nil {
-				logger.Stdout.Info("cmd out err produced")
+				utils.Logger.Info("cmd out err produced")
 				panic(err)
 			}
 
 			err = cmd.Start()
 			if err != nil {
-				logger.Stdout.Info("cmd failed to start")
+				utils.Logger.Info("cmd failed to start")
 				panic(err)
 			}
 
@@ -113,30 +112,30 @@ func DisableKillswitch(dryRun bool) (out []string, err error) {
 	rules := getUfwRules(true)
 	groupOut := make(map[string][]string)
 	for ruleKey, ruleGroup := range rules {
-		logger.Stdout.Infof("running ufw %s", ruleKey)
+		utils.Logger.Infof("running ufw %s", ruleKey)
 		for _, rule := range ruleGroup {
 
 			if dryRun {
 				rule = "--dry-run " + rule
 			}
-			logger.Stdout.Infof("ufw %s", strings.Fields(rule))
+			utils.Logger.Infof("ufw %s", strings.Fields(rule))
 			cmd := exec.Command("ufw", strings.Fields(rule)...)
 
 			stdout, err := cmd.StdoutPipe()
 			if err != nil {
-				logger.Stdout.Info("cmd out pipe produced err")
+				utils.Logger.Info("cmd out pipe produced err")
 				panic(err)
 			}
 
 			stderr, err := cmd.StderrPipe()
 			if err != nil {
-				logger.Stdout.Info("cmd out err produced")
+				utils.Logger.Info("cmd out err produced")
 				panic(err)
 			}
 
 			err = cmd.Start()
 			if err != nil {
-				logger.Stdout.Info("cmd failed to start")
+				utils.Logger.Info("cmd failed to start")
 				panic(err)
 			}
 
@@ -160,7 +159,7 @@ func DisableKillswitch(dryRun bool) (out []string, err error) {
 func checkHasUFW() (err error) {
 	cmd := exec.Command("ufw", "version")
 	if err = cmd.Run(); err != nil {
-		logger.Stdout.Info("ufw command not found")
+		utils.Logger.Info("ufw command not found")
 	}
 	return err
 }

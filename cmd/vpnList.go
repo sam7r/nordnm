@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/sam7r/nordnm/logger"
 	"github.com/sam7r/nordnm/nordvpn"
+	"github.com/sam7r/nordnm/utils"
 	"os"
 	"strings"
 
@@ -27,7 +27,7 @@ var vpnListCmd = &cobra.Command{
 
 		resp, err := nordvpn.GetRecommendations(flagFilters)
 		if err != nil {
-			logger.Stdout.Errorf("Getting recommendations failed: %v", err)
+			utils.Logger.Errorf("Getting recommendations failed: %v", err)
 		}
 
 		// create new table for output

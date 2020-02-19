@@ -2,10 +2,14 @@ package utils
 
 import (
 	"bufio"
+	"github.com/google/logger"
 	"io"
 	"io/ioutil"
 	"os"
 )
+
+// Logger writes log to stdout
+var Logger *logger.Logger
 
 // SaveFile saves file at given path
 func SaveFile(filepath string, file []byte, permissions int) error {
@@ -21,4 +25,10 @@ func GetStdoutText(r io.Reader) (stdout []string) {
 		}
 	}
 	return stdout
+}
+
+// InitLogger creates and binds instances of InfoLogger and SystemLogger types
+func InitLogger(verbose bool) {
+	Logger = logger.Init("STDoutLogger", verbose, false, ioutil.Discard)
+	defer Logger.Close()
 }

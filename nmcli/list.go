@@ -5,7 +5,6 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/sam7r/nordnm/logger"
 	"github.com/sam7r/nordnm/utils"
 )
 
@@ -28,7 +27,7 @@ func (ncs *NetworkConnections) FilterByType(typeName string) {
 		}
 	}
 
-	logger.Stdout.Info(filtered)
+	utils.Logger.Info(filtered)
 	*ncs = filtered
 }
 
@@ -43,7 +42,7 @@ func ListConnections(onlyActive bool) (out NetworkConnections, err error) {
 		execCmd = append(execCmd, "--active")
 	}
 
-	logger.Stdout.Infof("running nmcli %v", execCmd)
+	utils.Logger.Infof("running nmcli %v", execCmd)
 	cmd := exec.Command("nmcli", execCmd...)
 
 	stdout, err := cmd.StdoutPipe()
@@ -70,7 +69,7 @@ func ListConnections(onlyActive bool) (out NetworkConnections, err error) {
 
 	for _, conn := range data {
 		row := strings.Fields(conn)
-		logger.Stdout.Infof("%v", row)
+		utils.Logger.Infof("%v", row)
 		out = append(out, NetworkConnection{row[0], row[1], row[2]})
 	}
 	return out, err

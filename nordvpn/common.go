@@ -1,7 +1,7 @@
 package nordvpn
 
 import (
-	"github.com/sam7r/nordnm/logger"
+	"github.com/sam7r/nordnm/utils"
 	"io/ioutil"
 	"net/http"
 )
@@ -23,7 +23,7 @@ func makeRequestWithCallback(resourceURI string, callback func(*http.Request)) (
 
 // execReq do the request
 func execReq(req *http.Request) (body []byte, err error) {
-	logger.Stdout.Info(req.URL.String())
+	utils.Logger.Info(req.URL.String())
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -32,7 +32,7 @@ func execReq(req *http.Request) (body []byte, err error) {
 	}
 
 	defer resp.Body.Close()
-	logger.Stdout.Info(resp)
+	utils.Logger.Info(resp)
 
 	return ioutil.ReadAll(resp.Body)
 }

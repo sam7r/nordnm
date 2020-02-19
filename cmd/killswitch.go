@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/sam7r/nordnm/logger"
 	"github.com/sam7r/nordnm/ufw"
+	"github.com/sam7r/nordnm/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +33,7 @@ var killswitchEnableCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		out, err := ufw.EnableKillswitch(dryRun)
 		if err != nil {
-			logger.Stdout.Infof("An error occured enabling the killswitch: %e", err)
+			utils.Logger.Infof("An error occured enabling the killswitch: %e", err)
 		}
 		fmt.Printf("%s", out)
 	},
@@ -46,7 +46,7 @@ var killswitchDisableCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		out, err := ufw.DisableKillswitch(dryRun)
 		if err != nil {
-			logger.Stdout.Infof("An error occured removing the killswitch: %e", err)
+			utils.Logger.Infof("An error occured removing the killswitch: %e", err)
 		}
 		fmt.Println(out)
 	},

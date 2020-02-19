@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/sam7r/nordnm/logger"
 	"github.com/sam7r/nordnm/nordvpn"
+	"github.com/sam7r/nordnm/utils"
 	"os"
 
 	"github.com/jedib0t/go-pretty/table"
@@ -17,7 +17,7 @@ var vpnShowGroupsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		resp, err := nordvpn.GetGroups()
 		if err != nil {
-			logger.Stdout.Errorf("Getting groups failed: %v", err)
+			utils.Logger.Errorf("Getting groups failed: %v", err)
 		}
 
 		// create new table for output

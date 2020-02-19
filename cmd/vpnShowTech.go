@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/sam7r/nordnm/logger"
 	"github.com/sam7r/nordnm/nordvpn"
+	"github.com/sam7r/nordnm/utils"
 	"os"
 
 	"github.com/jedib0t/go-pretty/table"
@@ -17,7 +17,7 @@ var vpnShowTechCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		resp, err := nordvpn.GetTechnologies()
 		if err != nil {
-			logger.Stdout.Errorf("Getting technologies failed: %v", err)
+			utils.Logger.Errorf("Getting technologies failed: %v", err)
 		}
 
 		// create new table for output

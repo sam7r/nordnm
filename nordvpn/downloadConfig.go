@@ -2,7 +2,7 @@ package nordvpn
 
 import (
 	"fmt"
-	"github.com/sam7r/nordnm/logger"
+	"github.com/sam7r/nordnm/utils"
 	"io/ioutil"
 	"net/http"
 )
@@ -13,7 +13,7 @@ var tempDir = "/tmp"
 // GetNordVpnConfigFile fetches ovnpn config file from nordvpn
 func GetNordVpnConfigFile(hostID string, tech string) (ovpnConfig []byte, err error) {
 	resourceURI := fmt.Sprintf("https://downloads.nordcdn.com/configs/files/ovpn_%s/servers/%s.nordvpn.com.%s.ovpn", tech, hostID, tech)
-	logger.Stdout.Infof("Fetching OVPN file from %s", resourceURI)
+	utils.Logger.Infof("Fetching OVPN file from %s", resourceURI)
 	resp, err := http.Get(resourceURI)
 	if err != nil {
 		return nil, err
