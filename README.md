@@ -142,9 +142,9 @@ sudo nordnm killswitch disable [--OPTIONS]
 
 Both of the above commands are essentially shortcut for applying or removing the following rules
 ```sh
-# stop default traffic
+# deny all traffic
 default deny incoming
-default allow outgoing
+default deny outgoing
 
 # allow traffic on tun interface
 allow out on tun0 from any to any
